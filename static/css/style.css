@@ -175,7 +175,7 @@ h1, .brand {
 }
 
 
-/* Styling untuk Experience & Organization Sections */
+/* Styling untuk Experience & Organization Sections (Grid 2 Kolom, Tanpa Kotak Card) */
 .experience-section,
 .organization-section {
     padding: 4rem 0;
@@ -191,49 +191,42 @@ h1, .brand {
 }
 
 .experience-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
 }
 
 .experience-item {
-    background-color: #f4f2ea;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    display: grid;
-    grid-template-columns: 48px 1fr;
-    gap: 1.25rem;
-    align-items: start;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-}
-
-.experience-item:hover {
-    border-color: var(--ink);
-    transform: translateY(-2px);
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
 }
 
 .item-logo {
-    width: 48px;
-    height: 48px;
+    width: 56px;
+    height: 56px;
     border-radius: var(--radius);
     object-fit: cover;
-    border: 2px solid var(--ink);
-    background-color: var(--paper);
+    background-color: transparent;
+    border: none;
 }
 
 .item-content h3 {
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--ink);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.15rem;
 }
 
 .item-content .item-meta {
     font-size: 0.85rem;
     color: var(--accent-dark);
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.35rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
@@ -250,6 +243,12 @@ h1, .brand {
     color: var(--text-muted);
     font-size: 0.85rem;
     border-top: 1px solid var(--line);
+}
+
+@media (max-width: 768px) {
+    .experience-list {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 600px) {
