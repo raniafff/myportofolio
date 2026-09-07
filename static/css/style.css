@@ -175,6 +175,75 @@ h1, .brand {
 }
 
 
+/* Styling untuk Experience & Organization Sections */
+.experience-section,
+.organization-section {
+    padding: 4rem 0;
+    border-top: 1px solid var(--line);
+}
+
+.experience-section h2,
+.organization-section h2 {
+    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    color: var(--ink);
+}
+
+.experience-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.experience-item {
+    background-color: #f4f2ea;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.experience-item:hover {
+    border-color: var(--ink);
+    transform: translateY(-2px);
+}
+
+.item-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    object-fit: cover;
+    border: 2px solid var(--ink);
+    background-color: var(--paper);
+}
+
+.item-content h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+}
+
+.item-content .item-meta {
+    font-size: 0.85rem;
+    color: var(--accent-dark);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.item-content p:last-child {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+
 /* Footer & Responsive */
 .site-footer {
     padding: 1.5rem;
@@ -200,5 +269,3 @@ h1, .brand {
         justify-content: flex-start;
     }
 }
-
-
