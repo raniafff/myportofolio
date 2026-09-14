@@ -29,7 +29,7 @@ class Hobby(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField()
-    frequency = models.CharField(max_length=100)  # Contoh: "Setiap hari", "Akhir pekan"
+    frequency = models.CharField(max_length=100)  
     started_since = models.DateField(blank=True, null=True)
 
     def __str__(self):
