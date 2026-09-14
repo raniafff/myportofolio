@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from main.models import Experience
+from main.models import Hobby
 
 
 class MainTest(TestCase):
@@ -56,3 +57,24 @@ class MainTest(TestCase):
         self.assertFalse(self.experience.is_ongoing)
         self.assertContains(response, "Selesai")
         self.assertNotContains(response, "Sedang berlangsung")
+
+    def test_hobbies_url_is_exist(self):
+        response = self.client.get('/hobbies/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_hobbies_using_correct_template(self):
+        response = self.client.get(reverse('main:show_hobbies'))
+        self.assertTemplateUsed(response, 'hobbies.html')
+
+    def test_empty_hobbies_list(self):
+        response = self.client.get(reverse('main:show_hobbies'))
+        self.assertContains(response, "Belum ada data hobi yang ditambahkan.")
+
+    def test_hobby_data_is_displayed(self):
+        Hobby.objects.create(
+            name="Membaca Buku",
+            description="Membaca novel fiksi dan sains",
+            frequency="Setiap hari"
+        )
+        response = self.client.get(reverse('main:show_hobbies'))
+        self.assertContains(response, "Membaca Buku")
