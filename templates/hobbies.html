@@ -1,30 +1,49 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <title>Hobi - Portofolio</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'main:show_main' %}">Home</a>
-        <a href="{% url 'main:show_experience' %}">Experience</a>
-        <a href="{% url 'main:show_hobbies' %}">Hobbies</a>
-    </nav>
-
-    <h1>Hobi & Minat Saya</h1>
-
-    {% for hobby in hobby_list %}
-        <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 10px;">
-            <h3>{{ hobby.name }}</h3>
-            <p>{{ hobby.description }}</p>
-            <p><strong>Frekuensi:</strong> {{ hobby.frequency }}</p>
+    <header class="site-header">
+        <div class="container">
+            <a href="{% url 'main:show_main' %}" class="brand">Portofolio</a>
+            <nav>
+                <a href="{% url 'main:show_main' %}">Home</a>
+                <a href="{% url 'main:show_experience' %}">Experience</a>
+                <a href="{% url 'main:show_hobbies' %}">Hobbies</a>
+            </nav>
         </div>
-    {% empty %}
-        <p>Belum ada data hobi yang ditambahkan.</p>
-    {% endfor %}
+    </header>
 
-    <footer>
-        <p>&copy; 2026 Nama Kamu. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
+    <main class="hobbies-section">
+        <div class="container">
+            <span class="section-kicker">Aktivitas & Minat</span>
+            <h1>Hobi & Minat Saya</h1>
+
+            <div class="hobbies-grid">
+                {% for hobby in hobby_list %}
+                    <div class="hobby-card">
+                        <span class="hobby-frequency">Frekuensi: {{ hobby.frequency }}</span>
+                        <h2>{{ hobby.name }}</h2>
+                        <p class="hobby-description">{{ hobby.description }}</p>
+                        {% if hobby.started_since %}
+                            <div class="hobby-date">Sejak: {{ hobby.started_since }}</div>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p class="empty-state">Belum ada data hobi yang ditambahkan.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 {{ nickname }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
+        </div>
     </footer>
 </body>
 </html>
