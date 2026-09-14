@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Hobi - Portofolio</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'main:show_main' %}">Home</a>
+        <a href="{% url 'main:show_experience' %}">Experience</a>
+        <a href="{% url 'main:show_hobbies' %}">Hobbies</a>
+    </nav>
+
+    <h1>Hobi & Minat Saya</h1>
+
+    {% for hobby in hobby_list %}
+        <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 10px;">
+            <h3>{{ hobby.name }}</h3>
+            <p>{{ hobby.description }}</p>
+            <p><strong>Frekuensi:</strong> {{ hobby.frequency }}</p>
+        </div>
+    {% empty %}
+        <p>Belum ada data hobi yang ditambahkan.</p>
+    {% endfor %}
+
+    <footer>
+        <p>&copy; 2026 Nama Kamu. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
+    </footer>
+</body>
+</html>
