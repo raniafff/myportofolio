@@ -382,6 +382,7 @@ h1, .brand {
     color: var(--ink);
 }
 
+
 .project-form {
     width: 100%;
     max-width: 100%;
@@ -396,7 +397,7 @@ h1, .brand {
     display: block;
     margin-bottom: 0.4rem;
     font-weight: 700;
-    color: var(--ink);
+    color: var(--ink); /* Pakai pink terang sesuai theme */
 }
 
 .form-group input,
@@ -409,9 +410,7 @@ h1, .brand {
     color: var(--ink);
     border-radius: var(--radius);
     font: inherit;
-    transition:
-        border-color 0.2s ease,
-        outline-color 0.2s ease;
+    transition: border-color 0.2s ease, outline-color 0.2s ease;
 }
 
 .form-group input:focus,
@@ -451,5 +450,5 @@ h1, .brand {
 }
 
 .button-secondary:hover {
-    background: #000;
+    background: var(--accent);
 }
