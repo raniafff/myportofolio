@@ -3,7 +3,7 @@ from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from main.models import Experience, Hobby
+from main.models import Experience, Hobby, Project
 from main.forms import ProjectForm
 
 
@@ -35,16 +35,16 @@ def show_hobbies(request):
     }
     return render(request, "hobbies.html", context)
 
+def show_projects(request):
+    context = {
+        "project_list": Project.objects.all(),
+    }
+    return render(request, "show_projects.html", context)
+
 def create_project(request):
     form = ProjectForm(request.POST or None)
-
-    if request.method == "POST" and form.is_valid():
+    if form.is_valid() and request.method == 'POST':
         form.save()
-        messages.success(request, "Proyek baru berhasil ditambahkan!")
-        return redirect("main:show_projects")
-
-    context = {
-        "name": "Burhan",
-        "form": form,
-    }
-    return render(request, "projects_form.html", context)
+        return redirect('main:show_projects') 
+    context = {'form': form}
+    return render(request, 'project_form.html', context)

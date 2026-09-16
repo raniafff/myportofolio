@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Daftar Project</h1>
+    <ul>
+        {% for project in project_list %}
+            <li>{{ project.title }} - {{ project.description }}</li>
+        {% empty %}
+            <li>Belum ada project.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'main:create_project' %}">Tambah Project Baru</a>
+{% endblock content %}
