@@ -396,6 +396,7 @@ h1, .brand {
     display: block;
     margin-bottom: 0.4rem;
     font-weight: 700;
+    color: var(--ink);
 }
 
 .form-group input,
@@ -403,7 +404,9 @@ h1, .brand {
     width: 100%;
     box-sizing: border-box;
     padding: 0.7rem;
-    border: 1px solid var(--accent);
+    border: 1px solid var(--line);
+    background-color: #fff;
+    color: var(--ink);
     border-radius: var(--radius);
     font: inherit;
     transition:
@@ -435,8 +438,18 @@ h1, .brand {
     font: inherit;
     font-weight: 700;
     text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.button:hover {
+    background: var(--accent-dark);
 }
 
 .button-secondary {
     background: var(--ink);
+    color: var(--paper);
+}
+
+.button-secondary:hover {
+    background: #000;
 }
