@@ -35,12 +35,12 @@ def show_hobbies(request):
     }
     return render(request, "hobbies.html", context)
 
-def show_projects(request):
+def show_project(request):
     context = {
         "name": "Rania Tsabitah Firsa",
         "project_list": Project.objects.all(),
     }
-    return render(request, "show_projects.html", context) 
+    return render(request, "show_project.html", context) 
 
 
 def create_project(request):
@@ -48,7 +48,7 @@ def create_project(request):
     if request.method == "POST" and form.is_valid():
         form.save()
         messages.success(request, "Proyek baru berhasil ditambahkan!")
-        return redirect("main:show_projects")
+        return redirect("main:show_project")
     context = {
         "name": "Rania Tsabitah Firsa",
         "form": form,
