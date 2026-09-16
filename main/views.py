@@ -3,7 +3,6 @@ from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-
 from main.models import Experience, Hobby, Project
 from main.forms import ProjectForm
 
@@ -55,6 +54,7 @@ def create_project(request):
         "form": form,
     }
     return render(request, "projects_form.html", context)
+
 
 def get_projects_json(request):
     title_query = request.GET.get("title", "").strip()
