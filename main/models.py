@@ -45,3 +45,11 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+class Education(models.Model):
+    institution = models.CharField(max_length=255)  
+    degree = models.CharField(max_length=255)        
+    start_year = models.IntegerField()               
+    end_year = models.IntegerField(blank=True, null=True) 
+    is_current = models.BooleanField(default=False)  
+    description = models.TextField()                 
