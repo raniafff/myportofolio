@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.core import serializers
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 
-from main.models import Experience, Hobby, Project
-from main.forms import ProjectForm
+from main.models import Experience, Hobby, Project, Education
+from main.forms import ProjectForm, EducationForm
 
 
 def show_main(request):
@@ -63,3 +63,38 @@ def get_projects_json(request):
         projects = projects.filter(title__icontains=title_query)
     projects_json = serializers.serialize("json", projects)
     return HttpResponse(projects_json, content_type="application/json")
+
+
+def show_education(request):
+    education_list = Education.objects.all()
+    context = {
+        'name': 'Rania Tsabitah Firsa',
+        'education_list': education_list,
+    }
+    return render(request, 'show_education.html', context)
+
+def add_education(request):
+    form = EducationForm(request.POST or None)
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('main:show_education')
+    context = {'form': form}
+    return render(request, 'education_form.html', context)
+
+def edit_education(request, id):
+    education = get_object_or_404(Education, pk=id)
+    form = EducationForm(request.POST or None, instance=education)
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('main:show_education')
+    context = {'form': form}
+    return render(request, 'education_form.html', context)
+
+def delete_education(request, id):
+    education = get_object_or_404(Education, pk=id)
+    education.delete()
+    return HttpResponseRedirect('/education/')
+
+def show_json(request):
+    data = Education.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
