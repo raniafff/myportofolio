@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>Riwayat Pendidikan - {{ name }}</title>
+{% endblock meta %}
+
+{% block content %}
+    <section class="experience-section">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div>
+                    <p class="section-kicker">Akademik</p>
+                    <h1>Riwayat Pendidikan</h1>
+                </div>
+                <a href="{% url 'main:add_education' %}" class="button" style="background-color: #ff2d75; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700;">+ Tambah Pendidikan</a>
+            </div>
+
+            <div class="experience-grid">
+                {% for edu in education_list %}
+                    <article class="experience-card" style="position: relative; padding-bottom: 3rem;">
+                        <h2>{{ edu.institution }}</h2>
+                        <p class="item-meta" style="font-weight: bold; color: #ff2d75;">{{ edu.degree }}</p>
+                        <p class="item-meta">Tahun: {{ edu.start_year }} - {% if edu.is_current %}Sekarang{% else %}{{ edu.end_year }}{% endif %}</p>
+                        <p class="experience-description">{{ edu.description }}</p>
+                        
+                        <div style="position: absolute; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.5rem;">
+                            <a href="{% url 'main:edit_education' edu.id %}" style="background: #007bff; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem;">Edit</a>
+                            <a href="{% url 'main:delete_education' edu.id %}" style="background: #dc3545; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem;">Hapus</a>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div style="background: white; padding: 3rem; border-radius: 12px; text-align: center; grid-column: 1 / -1; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                        <p style="color: #666; font-size: 1.1rem; margin-bottom: 1.5rem;">Belum ada riwayat pendidikan yang ditambahkan.</p>
+                        <a href="{% url 'main:add_education' %}" class="button" style="background-color: #ff2d75; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700;">Tambah Pendidikan Pertama</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock content %}

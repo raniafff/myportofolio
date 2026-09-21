@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>Form Pendidikan - Portofolio</title>
+{% endblock meta %}
+
+{% block content %}
+    <section class="experience-section">
+        <div class="container" style="max-width: 600px; background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <h1 style="margin-bottom: 1.5rem; color: #333;">Form Pendidikan</h1>
+            
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" style="background-color: #ff2d75; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 1rem;">Simpan Pendidikan</button>
+            </form>
+            
+            <div style="margin-top: 1rem; text-align: center;">
+                <a href="{% url 'main:show_education' %}" style="color: #666; text-decoration: none; font-size: 0.9rem;">&larr; Kembali ke Daftar Pendidikan</a>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
