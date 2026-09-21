@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput, Textarea, URLInput
-from main.models import Project
+from main.models import Project, Education
 
 class ProjectForm(ModelForm):
     class Meta:
@@ -25,3 +25,8 @@ class ProjectForm(ModelForm):
             "project_url": URLInput(attrs={"placeholder": "https://github.com/..."}),
             "project_image_url": URLInput(attrs={"placeholder": "https://drive.google.com/thumbnail?id=...&sz=w1000"}),
         }
+
+class EducationForm(ModelForm):
+    class Meta:
+        model = Education
+        fields = ['institution', 'degree', 'start_year', 'end_year', 'is_current', 'description']
