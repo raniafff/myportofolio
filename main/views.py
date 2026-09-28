@@ -1,13 +1,21 @@
-from django.contrib import messages
+import datetime
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.core.exceptions import PermissionDenied
 from django.core import serializers
-from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
+from .models import Project
+from django.contrib import messages
+from django.http import HttpResponse, HttpResponseRedirect
+
 
 from main.models import Experience, Hobby, Project, Education
 from main.forms import ProjectForm, EducationForm
 
 
 def show_main(request):
+    last_login = request.COOKIES.get('last_login', 'Belum ada sesi login / Cookie tidak ditemukan')
     context = {
         "name": "Rania Tsabitah Firsa",
         "nickname": "Naea",
@@ -16,9 +24,38 @@ def show_main(request):
         "bio": (
             "Certified daydreamer. Living proof that you can major in something "
             "longer than planned while keeping your sanity intact."
-        ),
+            ),
+        "last_login": last_login,
     }
     return render(request, "index.html", context)
+
+def register(request):
+    form = UserCreationForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return redirect('main:login')
+    context = {'form': form}
+    return render(request, 'register.html', context)
+
+def login_user(request):
+    form = AuthenticationForm(request, data=request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        user = form.get_user()
+        login(request, user)
+        response = redirect("main:show_main")
+        response.set_cookie('last_login', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        return response
+    context = {
+        "name": "Rania Tsabitah Firsa",
+        "form": form,
+    }
+    return render(request, "login.html", context)
+
+def logout_user(request):
+    logout(request)
+    response = redirect("main:show_main")
+    response.delete_cookie('last_login')
+    return response
 
 
 def show_experience(request):
@@ -43,12 +80,17 @@ def show_project(request):
     return render(request, "show_project.html", context) 
 
 
+@login_required(login_url="/login/")
 def create_project(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    
     form = ProjectForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         form.save()
         messages.success(request, "Proyek baru berhasil ditambahkan!")
         return redirect("main:show_project")
+        
     context = {
         "name": "Rania Tsabitah Firsa",
         "form": form,
