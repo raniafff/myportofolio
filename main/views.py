@@ -73,11 +73,18 @@ def show_hobbies(request):
     return render(request, "hobbies.html", context)
 
 def show_project(request):
+    project_list = Project.objects.all()
+    
+    is_editor = False
+    if request.user.is_authenticated:
+        is_editor = request.user.groups.filter(name='Editor').exists()
+
     context = {
         "name": "Rania Tsabitah Firsa",
-        "project_list": Project.objects.all(),
+        "project_list": project_list,
+        "is_editor": is_editor, 
     }
-    return render(request, "show_project.html", context) 
+    return render(request, "show_project.html", context)
 
 
 @login_required(login_url="/login/")
@@ -96,6 +103,38 @@ def create_project(request):
         "form": form,
     }
     return render(request, "projects_form.html", context)
+
+
+@login_required(login_url="/login/")
+def edit_project(request, id):
+    is_editor = request.user.groups.filter(name='Editor').exists()
+    if not (request.user.is_superuser or is_editor):
+        raise PermissionDenied
+
+    project = get_object_or_404(Project, pk=id)
+    form = ProjectForm(request.POST or None, instance=project)
+    
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Proyek berhasil diperbarui!")
+        return redirect("main:show_project")
+        
+    context = {
+        "form": form,
+        "project": project,
+    }
+    return render(request, "edit_project.html", context)
+
+
+@login_required(login_url="/login/")
+def delete_project(request, id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    project = get_object_or_404(Project, pk=id)
+    project.delete()
+    messages.success(request, "Proyek berhasil dihapus!")
+    return redirect("main:show_project")
 
 
 def get_projects_json(request):
