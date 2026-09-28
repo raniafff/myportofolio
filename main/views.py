@@ -97,7 +97,8 @@ def create_project(request):
         form.save()
         messages.success(request, "Proyek baru berhasil ditambahkan!")
         return redirect("main:show_project")
-        
+    else:
+        form = ProjectForm()
     context = {
         "name": "Rania Tsabitah Firsa",
         "form": form,
