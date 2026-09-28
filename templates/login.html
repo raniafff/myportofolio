@@ -6,14 +6,8 @@
     <form method="POST" class="project-form">
         {% csrf_token %}
         
-        {% if form.non_field_errors %}
-            <div class="error-messages" style="color: red; margin-bottom: 10px;">
-                {% for error in form.non_field_errors %}
-                    <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-
+        {{ form.as_p }}
+        
         <button type="submit" class="button">Login</button>
     </form>
     <p>Belum punya akun? <a href="{% url 'main:register' %}">Daftar di sini</a>.</p>
