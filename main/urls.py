@@ -15,4 +15,8 @@ urlpatterns = [
     path('education/edit/<int:id>/', edit_education, name='edit_education'),
     path('education/delete/<int:id>/', delete_education, name='delete_education'),
     path('education/json/', show_json, name='show_json'),
+    path('register/', register, name='register'),
+    path('login/', login_user, name='login'),
+    path('logout/', logout_user, name='logout'),
+    path('projects/<uuid:project_id>/star/', toggle_star, name='toggle_star'),
 ]
