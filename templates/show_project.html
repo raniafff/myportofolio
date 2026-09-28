@@ -13,7 +13,9 @@
                     <p class="section-kicker">Karya & Proyek</p>
                     <h1>Daftar Project</h1>
                 </div>
-                <a href="{% url 'main:create_project' %}" class="button" style="background-color: #ff2d75; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700; transition: background 0.2s;">+ Tambah Project Baru</a>
+                {% if user.is_superuser %}
+                    <a href="{% url 'main:create_project' %}" class="button" style="background-color: #ff2d75; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700; transition: background 0.2s;">+ Tambah Project Baru</a>
+                {% endif %}
             </div>
 
             <div class="experience-grid">
@@ -23,11 +25,16 @@
                         <p class="experience-description">
                             {{ project.description }}
                         </p>
+                        
+                        <!-- Tombol Star untuk pengguna terdaftar -->
+                        {% include "components/project_star.html" with project=project %}
                     </article>
                 {% empty %}
                     <div class="empty-state-card" style="background: white; padding: 3rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); grid-column: 1 / -1;">
                         <p style="color: #666; font-size: 1.1rem; margin-bottom: 1.5rem;">Belum ada project yang ditambahkan.</p>
-                        <a href="{% url 'main:create_project' %}" class="button" style="background-color: #ff2d75; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700;">Tambah Project Pertama Kamu</a>
+                        {% if user.is_superuser %}
+                            <a href="{% url 'main:create_project' %}" class="button" style="background-color: #ff2d75; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700;">Tambah Project Pertama Kamu</a>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
