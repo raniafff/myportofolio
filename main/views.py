@@ -1,17 +1,15 @@
 import datetime
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.core.exceptions import PermissionDenied
 from django.core import serializers
-from django.shortcuts import get_object_or_404, redirect, render
-from .models import Project
-from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 
-
-from main.models import Experience, Hobby, Project, Education
-from main.forms import ProjectForm, EducationForm
+from main.forms import EducationForm, ProjectForm
+from main.models import Education, Experience, Hobby, Project
 
 
 def show_main(request):
