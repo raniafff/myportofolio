@@ -27,6 +27,15 @@
                         </p>
                         
                         {% include "components/project_star.html" with project=project %}
+                        <div style="margin-top: 1rem;">
+                            {% if user.is_superuser or is_editor %}
+                                <a href="{% url 'main:edit_project' project.id %}" class="button" style="background-color: #ffa500; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none; font-size: 0.9rem; margin-right: 0.5rem;">Edit</a>
+                            {% endif %}
+
+                            {% if user.is_superuser %}
+                                <a href="{% url 'main:delete_project' project.id %}" class="button" style="background-color: #dc3545; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">Hapus</a>
+                            {% endif %}
+                        </div>
                     </article>
                 {% empty %}
                     <div class="empty-state-card" style="background: white; padding: 3rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); grid-column: 1 / -1;">
