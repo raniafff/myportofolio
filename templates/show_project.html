@@ -14,7 +14,13 @@
                     <h1>Daftar Project</h1>
                 </div>
                 {% if user.is_superuser %}
-                    <a href="{% url 'main:create_project' %}" class="button" style="background-color: #ff2d75; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700; transition: background 0.2s;">+ Tambah Project Baru</a>
+                    <button type="button"
+                            class="button project-add-button"
+                            popovertarget="add-project-modal"
+                            style="background-color: #ff2d75; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 700; cursor: pointer; border: 0;">
+                        <span aria-hidden="true">+</span>
+                        Tambah Proyek
+                    </button>
                 {% endif %}
             </div>
 
@@ -53,6 +59,10 @@
             <div id="grid" class="experience-grid project-grid hide"></div>
         </div>
     </section>
+
+    {% if user.is_superuser %}
+        {% include "components/project_form_modal.html" %}
+    {% endif %}
 
     <script>
     // Konfigurasi
@@ -205,6 +215,11 @@
         clearTimeout(searchDebounceTimer);
         searchProjects();
     });
+
+    function closeProjectModal() {
+        const modal = document.getElementById("add-project-modal");
+        if (modal) modal.hidePopover();
+    }
 
     // Start application
     fetchProjects(searchInput.value.trim());

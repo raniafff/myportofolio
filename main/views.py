@@ -80,6 +80,7 @@ def show_project(request):
     context = {
         "name": "Rania Tsabitah Firsa",
         "title_query": title_query,
+        "form": ProjectForm(),
         "is_editor": is_editor, 
     }
     return render(request, "show_project.html", context)
