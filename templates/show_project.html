@@ -18,34 +18,179 @@
                 {% endif %}
             </div>
 
-            <div class="experience-grid">
-                {% for project in project_list %}
-                    <article class="experience-card">
-                        <h2>{{ project.title }}</h2>
-                        <p class="experience-description">
-                            {{ project.description }}
-                        </p>
-                        
-                        {% include "components/project_star.html" with project=project %}
-                        <div style="margin-top: 1rem;">
-                            {% if user.is_superuser or is_editor %}
-                                <a href="{% url 'main:edit_project' project.id %}" class="button" style="background-color: #ffa500; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none; font-size: 0.9rem; margin-right: 0.5rem;">Edit</a>
-                            {% endif %}
+            <button class="button button-secondary" style="margin-bottom: 1rem;" onclick="showToast('Notifikasi Sistem', 'Project berhasil dimuat dengan baik!', 'success')">
+                Test Toast Notifikasi
+            </button>
 
-                            {% if user.is_superuser %}
-                                <a href="{% url 'main:delete_project' project.id %}" class="button" style="background-color: #dc3545; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">Hapus</a>
-                            {% endif %}
-                        </div>
-                    </article>
-                {% empty %}
-                    <div class="empty-state-card" style="background: white; padding: 3rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); grid-column: 1 / -1;">
-                        <p style="color: #666; font-size: 1.1rem; margin-bottom: 1.5rem;">Belum ada project yang ditambahkan.</p>
-                        {% if user.is_superuser %}
-                            <a href="{% url 'main:create_project' %}" class="button" style="background-color: #ff2d75; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 700;">Tambah Project Pertama Kamu</a>
-                        {% endif %}
-                    </div>
-                {% endfor %}
+            <form id="project-search-form" class="project-search" style="margin-bottom: 1.5rem; display: flex; gap: 0.5rem;">
+                <input type="search"
+                       id="search-input"
+                       name="title"
+                       value="{{ title_query }}"
+                       placeholder="Cari berdasarkan nama proyek"
+                       class="project-search__input"
+                       aria-label="Cari berdasarkan nama proyek"
+                       style="flex: 1; padding: 0.65rem 1rem; border-radius: var(--radius); border: 1px solid var(--line);">
+                <button type="submit" class="button">Cari</button>
+            </form>
+
+            <!-- Loading State -->
+            <div id="loading" class="empty-state hide" style="text-align: center; padding: 2rem;">
+                <p>Memuat projects...</p>
             </div>
+
+            <!-- Error State -->
+            <div id="error" class="empty-state hide" style="text-align: center; padding: 2rem; color: #b42318;">
+                <p>Gagal memuat data projects. Silakan coba lagi.</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty" class="empty-state hide" style="text-align: center; padding: 2rem;">
+                <p>Belum ada proyek yang ditambahkan atau ditemukan.</p>
+            </div>
+
+            <!-- Project Grid -->
+            <div id="grid" class="experience-grid project-grid hide"></div>
         </div>
     </section>
+
+    <script>
+    // Konfigurasi
+    const BASE_PROJECTS_ENDPOINT = "{% url 'main:get_projects_json' %}";
+    const IS_SUPERUSER = "{{ user.is_superuser|yesno:'true,false' }}" === "true";
+    const IS_EDITOR = "{{ is_editor|yesno:'true,false' }}" === "true";
+    let projectsAbortController;
+
+    // Elemen DOM
+    const loadingState = document.getElementById('loading');
+    const errorState = document.getElementById('error');
+    const emptyState = document.getElementById('empty');
+    const gridContainer = document.getElementById('grid');
+    const searchForm = document.getElementById('project-search-form');
+    const searchInput = document.getElementById('search-input');
+
+    // Menyembunyikan/Menampilkan section halaman
+    function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
+        loadingState.classList.toggle('hide', !showLoading);
+        errorState.classList.toggle('hide', !showError);
+        emptyState.classList.toggle('hide', !showEmpty);
+        gridContainer.classList.toggle('hide', !showGrid);
+    }
+
+    // Membuat elemen card project
+    function buildProjectCardElement(item) {
+        const project = item.fields;
+        const projectId = item.pk;
+
+        const articleElement = document.createElement('article');
+        articleElement.className = 'experience-card';
+
+        const imageHtml = project.project_image_url 
+            ? `<img src="${project.project_image_url}" alt="Gambar ${project.title}" class="project-image" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">`
+            : '';
+
+        const urlHtml = project.project_url 
+            ? `<a href="${project.project_url}" class="button" target="_blank" rel="noopener noreferrer">Lihat Project</a>`
+            : '';
+
+        // Dummy UUID digunakan untuk digantikan oleh ID asli dari data JSON
+        const deleteUrl = "{% url 'main:delete_project' '00000000-0000-0000-0000-000000000000' %}"
+            .replace('00000000-0000-0000-0000-000000000000', projectId);
+        const editUrl = "{% url 'main:edit_project' '00000000-0000-0000-0000-000000000000' %}"
+            .replace('00000000-0000-0000-0000-000000000000', projectId);
+        const starUrl = "{% url 'main:toggle_star' '00000000-0000-0000-0000-000000000000' %}"
+            .replace('00000000-0000-0000-0000-000000000000', projectId);
+
+        const editHtml = (IS_SUPERUSER || IS_EDITOR)
+            ? `<a href="${editUrl}" class="button" style="background-color: #ffa500; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none; font-size: 0.9rem; margin-right: 0.5rem;">Edit</a>`
+            : '';
+
+        const deleteHtml = IS_SUPERUSER 
+            ? `<form method="post" action="${deleteUrl}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="button button-danger" style="background-color: #dc3545;" onclick="return confirm('Yakin ingin menghapus project ini?');">Hapus</button>
+            </form>`
+            : '';
+
+        const isStarredClass = project.is_starred ? " is-starred" : "";
+        const starText = project.is_starred ? "Unstar" : "Star";
+        const starTitle = project.star_count > 0 
+            ? `Dibintangi oleh ${project.starred_by_names}` 
+            : "Jadilah yang pertama memberi star";
+
+        // Komponen card
+        const completeCardHtml = `
+            ${imageHtml}
+            <h2>${project.title}</h2>
+            <span class="experience-category">${project.tech_stack}</span>
+            <p class="experience-description">${project.description}</p>
+            <div class="project-card-actions" style="margin-top: 1rem;">
+                <div class="project-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                    ${urlHtml}
+                    
+                    <form method="post" action="${starUrl}" class="star-form">
+                        {% csrf_token %}
+                        <button type="submit" 
+                                class="button button-star${isStarredClass}"
+                                title="${starTitle}">
+                            <span aria-hidden="true">★</span>
+                            ${starText}
+                            <span class="star-count">${project.star_count}</span>
+                        </button>
+                    </form>
+
+                    ${editHtml}
+                    ${deleteHtml}
+                </div>
+            </div>
+        `;
+
+        articleElement.innerHTML = completeCardHtml;
+        return articleElement;
+    }
+
+    // Fetch data project
+    async function fetchProjects(searchQuery = "") {
+        if (projectsAbortController) projectsAbortController.abort();
+        projectsAbortController = new AbortController();
+
+        try {
+            displayPageSection({ showLoading: true });
+            
+            const url = searchQuery ? `${BASE_PROJECTS_ENDPOINT}?title=${encodeURIComponent(searchQuery)}` : BASE_PROJECTS_ENDPOINT;
+            
+            const response = await fetch(url, {
+                headers: { 'Accept': 'application/json' },
+                signal: projectsAbortController.signal,
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch data');
+
+            const projectData = await response.json();
+
+            if (projectData.length === 0) {
+                displayPageSection({ showEmpty: true });
+            } else {
+                gridContainer.innerHTML = '';
+                projectData.forEach(item => {
+                    gridContainer.appendChild(buildProjectCardElement(item));
+                });
+                displayPageSection({ showGrid: true });
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') return;
+            console.error('Error loading projects:', error);
+            displayPageSection({ showError: true });
+        }
+    }
+
+    // Event Handlers untuk Form Search
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // Mencegah reload halaman
+        fetchProjects(searchInput.value.trim()); // Jalankan pencarian via AJAX
+    });
+
+    // Start application
+    fetchProjects(searchInput.value.trim());
+    </script>
 {% endblock content %}
