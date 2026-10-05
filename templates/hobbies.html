@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>Hobi - {{ name }}</title>
+{% endblock meta %}
+
+{% block content %}
+<section class="experience-section">
+    <div class="container">
+        <h1>Daftar Hobi</h1>
+        <div class="experience-grid">
+            {% for hobby in hobby_list %}
+                <article class="experience-card">
+                    <h2>{{ hobby.name }}</h2>
+                    <p class="item-meta">{{ hobby.frequency }}</p>
+                    <p class="experience-description">{{ hobby.description }}</p>
+                </article>
+            {% empty %}
+                <p>Belum ada data hobi yang ditambahkan.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock content %}

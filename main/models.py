@@ -58,3 +58,9 @@ class Education(models.Model):
     end_year = models.IntegerField(blank=True, null=True) 
     is_current = models.BooleanField(default=False)  
     description = models.TextField()                 
+    starred_by = models.ManyToManyField(
+        User, related_name="starred_educations", blank=True
+    )
+
+    def __str__(self):
+        return f"{self.degree} at {self.institution}"
