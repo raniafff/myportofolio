@@ -2,23 +2,23 @@
 {% load static %}
 
 {% block meta %}
-    <title>Manajemen Kontak (HTMX) - {{ name }}</title>
+    <title>Kontak & Jejaring - {{ name }}</title>
 {% endblock meta %}
 
 {% block content %}
 <section class="experience-section">
     <div class="container">
         <div style="margin-bottom: 2rem;">
-            <p class="section-kicker">Tutorial 06: HTMX</p>
-            <h1>Manajemen Kontak</h1>
-            <p style="color: var(--muted); margin-top: 0.5rem;">
-                Aplikasi interaktif satu halaman (*Single-Page Application*) berbasis Django &amp; HTMX tanpa *full page reload*.
+            <p class="section-kicker">Koneksi & Jejaring</p>
+            <h1>Kontak</h1>
+            <p style="color: var(--muted); margin-top: 0.5rem; font-size: 1.05rem;">
+                Mari terhubung! Tinggalkan kontakmu untuk berdiskusi, berkolaborasi, atau sekadar menyapa.
             </p>
         </div>
 
         <!-- Form Tambah Kontak Baru -->
-        <div style="background: white; border: 1px solid var(--line); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-            <h3 style="margin-bottom: 1rem; font-size: 1.2rem;">Tambah Kontak Baru</h3>
+        <div style="background: white; border: 1px solid var(--line); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
+            <h3 style="margin-bottom: 1rem; font-size: 1.15rem; color: #111;">Tambah Kontak</h3>
             <form hx-post="{% url 'main:contact_add' %}" 
                   hx-target="#contact-rows" 
                   hx-swap="innerHTML" 
@@ -27,18 +27,18 @@
                 {% csrf_token %}
                 <input type="text" 
                        name="name" 
-                       placeholder="Nama Lengkap..." 
+                       placeholder="Nama Lengkap" 
                        required 
                        style="flex: 1; min-width: 220px; padding: 0.65rem 1rem; border-radius: var(--radius); border: 1px solid var(--line); font-family: inherit;">
                 <input type="email" 
                        name="email" 
-                       placeholder="Alamat Email..." 
+                       placeholder="Alamat Email" 
                        required 
                        style="flex: 1; min-width: 220px; padding: 0.65rem 1rem; border-radius: var(--radius); border: 1px solid var(--line); font-family: inherit;">
                 <button type="submit" 
                         class="button" 
                         style="background-color: #ff2d75; color: white; border: none; padding: 0.65rem 1.5rem; border-radius: var(--radius); font-weight: 700; cursor: pointer;">
-                    Tambah Kontak
+                    Simpan Kontak
                 </button>
             </form>
         </div>
@@ -54,11 +54,11 @@
                    hx-indicator="#search-indicator"
                    aria-label="Cari kontak"
                    style="flex: 1; padding: 0.65rem 1rem; border-radius: var(--radius); border: 1px solid var(--line); font-family: inherit;">
-            <span id="search-indicator" class="htmx-indicator" style="color: #666; font-style: italic;">Mencari...</span>
+            <span id="search-indicator" class="htmx-indicator" style="color: #666; font-style: italic; font-size: 0.9rem;">Mencari...</span>
         </div>
 
         <!-- Tabel Kontak -->
-        <div style="background: white; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <div style="background: white; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <thead style="background-color: #fafafa; border-bottom: 1px solid var(--line);">
                     <tr>
