@@ -6,12 +6,12 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 
 from main.forms import EducationForm, ProjectForm
-from main.models import Education, Experience, Hobby, Project
+from main.models import Contact, Education, Experience, Hobby, Project
 
 
 def show_main(request):
@@ -326,3 +326,65 @@ def toggle_education_star(request, education_id):
         else:
             education.starred_by.add(request.user)
     return redirect("main:show_education")
+
+
+# Tutorial 06: HTMX Contact Views
+def contact_list(request):
+    contacts = Contact.objects.all().order_by("-id")
+    context = {
+        "name": "Rania Tsabitah Firsa",
+        "nickname": "Naea",
+        "contacts": contacts,
+    }
+    return render(request, "contacts.html", context)
+
+
+def contact_add(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        email = request.POST.get("email", "").strip()
+        if name and email:
+            Contact.objects.create(name=name, email=email)
+        contacts = Contact.objects.all().order_by("-id")
+        return render(request, "_contact_rows.html", {"contacts": contacts})
+    return HttpResponse(status=405)
+
+
+def contact_search(request):
+    query = request.GET.get("q", "").strip()
+    if query:
+        contacts = Contact.objects.filter(name__icontains=query).order_by("-id")
+    else:
+        contacts = Contact.objects.all().order_by("-id")
+    return render(request, "_contact_rows.html", {"contacts": contacts})
+
+
+def contact_edit(request, pk):
+    contact = get_object_or_404(Contact, pk=pk)
+    return render(request, "_contact_edit_row.html", {"contact": contact})
+
+
+def contact_row(request, pk):
+    contact = get_object_or_404(Contact, pk=pk)
+    return render(request, "_contact_row.html", {"contact": contact})
+
+
+@require_http_methods(["PUT"])
+def contact_update(request, pk):
+    contact = get_object_or_404(Contact, pk=pk)
+    data = QueryDict(request.body)
+    name = data.get("name", contact.name).strip()
+    email = data.get("email", contact.email).strip()
+    if name:
+        contact.name = name
+    if email:
+        contact.email = email
+    contact.save()
+    return render(request, "_contact_row.html", {"contact": contact})
+
+
+@require_http_methods(["DELETE"])
+def contact_delete(request, pk):
+    contact = get_object_or_404(Contact, pk=pk)
+    contact.delete()
+    return HttpResponse("")

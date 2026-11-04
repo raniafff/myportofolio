@@ -1,0 +1,10 @@
+{% for contact in contacts %}
+    {% include "_contact_row.html" %}
+{% empty %}
+    <tr>
+        <td colspan="3" style="text-align: center; color: #777; padding: 2rem;">
+            Belum ada kontak yang tersimpan atau ditemukan.
+        </td>
+    </tr>
+{% endfor %}
+

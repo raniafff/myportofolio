@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from main.models import Experience
 from main.models import Hobby
+from main.models import Contact
 
 
 class MainTest(TestCase):
@@ -78,3 +79,59 @@ class MainTest(TestCase):
         )
         response = self.client.get(reverse('main:show_hobbies'))
         self.assertContains(response, "Membaca Buku")
+
+
+class ContactHTMXTest(TestCase):
+    def setUp(self):
+        self.contact = Contact.objects.create(
+            name="Ahmad Dahlan",
+            email="ahmad@example.com"
+        )
+
+    def test_contact_list_page(self):
+        response = self.client.get(reverse("main:contact_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "contacts.html")
+        self.assertContains(response, "Ahmad Dahlan")
+        self.assertContains(response, "ahmad@example.com")
+
+    def test_contact_add_htmx(self):
+        response = self.client.post(reverse("main:contact_add"), {
+            "name": "Budi Santoso",
+            "email": "budi@example.com"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "_contact_rows.html")
+        self.assertContains(response, "Budi Santoso")
+        self.assertTrue(Contact.objects.filter(name="Budi Santoso").exists())
+
+    def test_contact_search_htmx(self):
+        response = self.client.get(reverse("main:contact_search"), {"q": "Ahmad"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Ahmad Dahlan")
+
+        response_empty = self.client.get(reverse("main:contact_search"), {"q": "TidakAda"})
+        self.assertEqual(response_empty.status_code, 200)
+        self.assertContains(response_empty, "Belum ada kontak")
+
+    def test_contact_edit_row_htmx(self):
+        response = self.client.get(reverse("main:contact_edit", args=[self.contact.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "_contact_edit_row.html")
+        self.assertContains(response, "value=\"Ahmad Dahlan\"")
+
+    def test_contact_update_htmx(self):
+        response = self.client.put(
+            reverse("main:contact_update", args=[self.contact.id]),
+            data="name=Ahmad+Updated&email=updated@example.com",
+            content_type="application/x-www-form-urlencoded"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.contact.refresh_from_db()
+        self.assertEqual(self.contact.name, "Ahmad Updated")
+        self.assertEqual(self.contact.email, "updated@example.com")
+
+    def test_contact_delete_htmx(self):
+        response = self.client.delete(reverse("main:contact_delete", args=[self.contact.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Contact.objects.filter(id=self.contact.id).exists())

@@ -8,6 +8,40 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <style>
+        .htmx-indicator {
+            display: none;
+        }
+        .htmx-request .htmx-indicator,
+        .htmx-request.htmx-indicator {
+            display: inline-block;
+        }
+    </style>
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            document.body.addEventListener('htmx:configRequest', function (event) {
+                const csrfToken = getCookie('csrftoken');
+                if (csrfToken) {
+                    event.detail.headers['X-CSRFToken'] = csrfToken;
+                }
+            });
+        });
+    </script>
     {% block meta %} {% endblock meta %}
 </head>
 
@@ -20,6 +54,7 @@
                 <a href="{% url 'main:show_experience' %}">Experience</a>
                 <a href="{% url 'main:show_project' %}">Projects</a>
                 <a href="{% url 'main:show_education' %}">Education</a>
+                <a href="{% url 'main:contact_list' %}">Contacts</a>
 
                 {% if user.is_authenticated %}
                 <span style="margin-right: 1rem;">Halo, <b>{{ user.username }}</b>!</span>

@@ -1,0 +1,39 @@
+<tr id="contact-{{ contact.id }}" style="border-bottom: 1px solid var(--line); background-color: #fffbeb;">
+    <td style="padding: 0.75rem 1.5rem;">
+        <input type="text" 
+               name="name" 
+               value="{{ contact.name }}" 
+               form="edit-form-{{ contact.id }}" 
+               required 
+               style="width: 100%; padding: 0.45rem 0.75rem; border: 1px solid var(--line); border-radius: 6px; font-family: inherit;">
+    </td>
+    <td style="padding: 0.75rem 1.5rem;">
+        <input type="email" 
+               name="email" 
+               value="{{ contact.email }}" 
+               form="edit-form-{{ contact.id }}" 
+               required 
+               style="width: 100%; padding: 0.45rem 0.75rem; border: 1px solid var(--line); border-radius: 6px; font-family: inherit;">
+    </td>
+    <td style="padding: 0.75rem 1.5rem;">
+        <form id="edit-form-{{ contact.id }}" 
+              hx-put="{% url 'main:contact_update' contact.id %}" 
+              hx-target="#contact-{{ contact.id }}" 
+              hx-swap="outerHTML" 
+              style="display: inline-flex; gap: 0.5rem; align-items: center; margin: 0;">
+            {% csrf_token %}
+            <button type="submit" 
+                    style="padding: 0.45rem 0.85rem; cursor: pointer; border-radius: 6px; border: none; background: #16a34a; color: white; font-weight: 600; font-size: 0.9rem;">
+                Simpan
+            </button>
+            <button type="button" 
+                    hx-get="{% url 'main:contact_row' contact.id %}" 
+                    hx-target="#contact-{{ contact.id }}" 
+                    hx-swap="outerHTML"
+                    style="padding: 0.45rem 0.85rem; cursor: pointer; border-radius: 6px; border: 1px solid var(--line); background: #f3f4f6; font-size: 0.9rem;">
+                Batal
+            </button>
+        </form>
+    </td>
+</tr>
+

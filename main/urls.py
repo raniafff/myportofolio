@@ -21,7 +21,14 @@ from main.views import (
     register, 
     login_user, 
     logout_user, 
-    toggle_star
+    toggle_star,
+    contact_list,
+    contact_add,
+    contact_search,
+    contact_edit,
+    contact_row,
+    contact_update,
+    contact_delete,
 ) 
 
 app_name = "main"
@@ -48,4 +55,11 @@ urlpatterns = [
     path('login/', login_user, name='login'),
     path('logout/', logout_user, name='logout'),
     path('projects/<uuid:project_id>/star/', toggle_star, name='toggle_star'),
+    path('contacts/', contact_list, name='contact_list'),
+    path('contacts/add/', contact_add, name='contact_add'),
+    path('contacts/search/', contact_search, name='contact_search'),
+    path('contacts/<int:pk>/edit/', contact_edit, name='contact_edit'),
+    path('contacts/<int:pk>/row/', contact_row, name='contact_row'),
+    path('contacts/<int:pk>/update/', contact_update, name='contact_update'),
+    path('contacts/<int:pk>/delete/', contact_delete, name='contact_delete'),
 ]
