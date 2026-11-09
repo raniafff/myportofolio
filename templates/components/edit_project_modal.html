@@ -1,0 +1,60 @@
+<div id="edit-project-modal"
+    class="project-form-modal"
+    popover="auto"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="edit-project-modal-title">
+    <button type="button"
+            class="project-form-modal__backdrop"
+            popovertarget="edit-project-modal"
+            popovertargetaction="hide"
+            aria-label="Tutup form edit proyek"></button>
+
+    <div class="project-form-modal__content">
+        <button type="button"
+                class="project-form-modal__close"
+                popovertarget="edit-project-modal"
+                popovertargetaction="hide"
+                aria-label="Tutup form edit proyek">×</button>
+
+        <h2 id="edit-project-modal-title">Edit Proyek</h2>
+        <form id="edit-project-form" class="project-form">
+            {% csrf_token %}
+            <input type="hidden" id="edit-project-id" name="project_id">
+
+            <div class="form-group">
+                <label for="edit-project-title">Judul Proyek</label>
+                <input type="text" id="edit-project-title" name="title" required class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label for="edit-project-tech">Tech Stack</label>
+                <input type="text" id="edit-project-tech" name="tech_stack" required class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label for="edit-project-desc">Deskripsi</label>
+                <textarea id="edit-project-desc" name="description" rows="4" required class="form-textarea"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-project-url">Tautan Proyek (Opsional)</label>
+                <input type="url" id="edit-project-url" name="project_url" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label for="edit-project-image">Tautan Gambar (Opsional)</label>
+                <input type="url" id="edit-project-image" name="project_image_url" class="form-input">
+            </div>
+
+            <div class="project-form-modal__actions">
+                <button type="button"
+                        class="button button-secondary"
+                        popovertarget="edit-project-modal"
+                        popovertargetaction="hide">Batal</button>
+                <button type="submit" class="button" style="background-color: #ffa500; color: white;">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+

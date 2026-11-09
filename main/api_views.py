@@ -1,7 +1,8 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -15,16 +16,17 @@ from main.serializers import ProjectSerializer, EducationSerializer
 # ==============================================================================
 
 @api_view(['GET', 'POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def api_project_list(request):
     """
-    List all projects (with optional search query 'q') or create a new project.
+    List all projects (with optional search query 'q' or 'title') or create a new project.
     - GET: Public (Visitor, Regular User, Editor, Owner)
     - POST: Restricted to Owner (Superuser)
     """
     if request.method == 'GET':
-        query = request.GET.get('q', '').strip()
-        projects = Project.objects.all()
+        query = (request.GET.get('q', '') or request.GET.get('title', '')).strip()
+        projects = Project.objects.all().order_by('-id')
         if query:
             projects = projects.filter(
                 Q(title__icontains=query) |
@@ -43,6 +45,7 @@ def api_project_list(request):
 
 
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def api_project_detail(request, id):
     """
@@ -76,6 +79,7 @@ def api_project_detail(request, id):
 
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def api_project_toggle_star(request, id):
     """
@@ -102,6 +106,7 @@ def api_project_toggle_star(request, id):
 # ==============================================================================
 
 @api_view(['GET', 'POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def api_education_list(request):
     """
@@ -110,7 +115,7 @@ def api_education_list(request):
     - POST: Restricted to Owner (Superuser)
     """
     if request.method == 'GET':
-        query = request.GET.get('q', '').strip()
+        query = (request.GET.get('q', '') or request.GET.get('institution', '')).strip()
         educations = Education.objects.all().order_by('-start_year')
         if query:
             educations = educations.filter(
@@ -130,6 +135,7 @@ def api_education_list(request):
 
 
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def api_education_detail(request, id):
     """
@@ -163,6 +169,7 @@ def api_education_detail(request, id):
 
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def api_education_toggle_star(request, id):
     """

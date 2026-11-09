@@ -8,6 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST, require_http_methods
 
 from main.forms import EducationForm, ProjectForm
@@ -72,6 +73,7 @@ def show_hobbies(request):
     }
     return render(request, "hobbies.html", context)
 
+@ensure_csrf_cookie
 def show_project(request):
     title_query = request.GET.get("title", "").strip()
     
@@ -187,6 +189,7 @@ def get_projects_json(request):
     return JsonResponse(data, safe=False)
 
 
+@ensure_csrf_cookie
 def show_education(request):
     search_query = request.GET.get("q", "").strip()
     is_editor = False

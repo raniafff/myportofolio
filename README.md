@@ -129,3 +129,16 @@ Hobi : Membaca buku
    * **Mengapa `force_authenticate` tidak cukup untuk membuktikan perlindungan CSRF**:
      * `force_authenticate` adalah modul utilitas pengujian bawaan DRF (`rest_framework.test`) yang dirancang untuk mempercepat pengujian logika view dan izin akses. Ketika fungsi ini dipanggil, DRF secara langsung menyuntikkan objek pengguna ke `request.user` dan **secara eksplisit melewati (*bypass*) seluruh alur autentikasi dan validasi middleware CSRF Django**.
      * Oleh karena itu, pengujian yang menggunakan `force_authenticate` hanya membuktikan bahwa izin otorisasi (*permission class*) dan logika data pada view bekerja dengan benar untuk pengguna terkait, namun **sama sekali tidak menguji apakah mekanisme penolakan CSRF berfungsi** ketika ada permintaan tanpa token CSRF yang sah. Untuk memverifikasi bahwa perlindungan CSRF benar-benar aktif di lingkungan nyata, pengujian harus dilakukan menggunakan *client* HTTP standar tanpa mem-*bypass* middleware CSRF.
+
+
+---
+
+### AI Disclosure
+* **Tool yang digunakan**: Antigravity Assistant (AI Pair Programmer).
+* **Strategi Prompting**: Memberikan instruksi spesifikasi tugas secara bertahap dan terperinci sesuai silabus resmi PBP Fasilkom UI (Gasal 2026/2027), mulai dari instalasi DRF, perancangan Serializer eksplisit dengan pembersihan XSS, implementasi custom permission class empat peran, pembuatan endpoint RESTful `/api/v1/`, integrasi antarmuka asinkron (fetch) tanpa reload halaman, hingga penulisan unit test berbasis `APITestCase`.
+* **Bagian yang dibantu**:
+  - Penyusunan `ModelSerializer` di `main/serializers.py` dengan computed fields (`star_count`, `is_starred`) dan sanitasi input `strip_tags`.
+  - Perancangan aturan otorisasi berbasis peran di `main/permissions.py` (`IsPortfolioOwnerOrEditorOrReadOnly`).
+  - Implementasi fungsi API views dengan `@api_view` dan `SessionAuthentication` di `main/api_views.py`.
+  - Integrasi antarmuka pada `show_project.html` dan `show_education.html` (modal edit baru, aksi delete, toggle star, dan error handling toast via fetch API).
+  - Penulisan skenario pengujian komprehensif pada `main/tests.py` termasuk verifikasi konsistensi isi basis data dan pembuktian penegakan CSRF menggunakan `APIClient(enforce_csrf_checks=True)`.

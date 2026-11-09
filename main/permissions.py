@@ -20,7 +20,11 @@ class IsPortfolioOwnerOrEditorOrReadOnly(permissions.BasePermission):
         if request.user.is_superuser:
             return True
 
-        is_editor = request.user.groups.filter(name='Editor').exists()
+        is_editor = (
+            request.user.groups.filter(name='Editor').exists() or
+            request.user.has_perm('main.change_project') or
+            request.user.has_perm('main.change_education')
+        )
         if is_editor and request.method in ['PUT', 'PATCH']:
             return True
 
@@ -36,7 +40,11 @@ class IsPortfolioOwnerOrEditorOrReadOnly(permissions.BasePermission):
         if request.user.is_superuser:
             return True
 
-        is_editor = request.user.groups.filter(name='Editor').exists()
+        is_editor = (
+            request.user.groups.filter(name='Editor').exists() or
+            request.user.has_perm('main.change_project') or
+            request.user.has_perm('main.change_education')
+        )
         if is_editor and request.method in ['PUT', 'PATCH']:
             return True
 

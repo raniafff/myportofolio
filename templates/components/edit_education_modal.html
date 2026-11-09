@@ -1,0 +1,65 @@
+<div id="edit-education-modal"
+    class="project-form-modal"
+    popover="auto"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="edit-education-modal-title">
+    <button type="button"
+            class="project-form-modal__backdrop"
+            popovertarget="edit-education-modal"
+            popovertargetaction="hide"
+            aria-label="Tutup form edit pendidikan"></button>
+
+    <div class="project-form-modal__content">
+        <button type="button"
+                class="project-form-modal__close"
+                popovertarget="edit-education-modal"
+                popovertargetaction="hide"
+                aria-label="Tutup form edit pendidikan">×</button>
+
+        <h2 id="edit-education-modal-title">Edit Riwayat Pendidikan</h2>
+        <form id="edit-education-form" class="project-form">
+            {% csrf_token %}
+            <input type="hidden" id="edit-education-id" name="education_id">
+
+            <div class="form-group">
+                <label for="edit-edu-institution">Institusi Pendidikan</label>
+                <input type="text" id="edit-edu-institution" name="institution" required class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label for="edit-edu-degree">Gelar / Jenjang / Jurusan</label>
+                <input type="text" id="edit-edu-degree" name="degree" required class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label for="edit-edu-start-year">Tahun Mulai</label>
+                <input type="number" id="edit-edu-start-year" name="start_year" required class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label for="edit-edu-end-year">Tahun Selesai (Kosongkan jika sedang berjalan)</label>
+                <input type="number" id="edit-edu-end-year" name="end_year" class="form-input">
+            </div>
+
+            <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                <input type="checkbox" id="edit-edu-is-current" name="is_current" style="cursor: pointer;">
+                <label for="edit-edu-is-current" style="margin-bottom: 0; cursor: pointer;">Masih menempuh pendidikan di sini</label>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-edu-description">Deskripsi</label>
+                <textarea id="edit-edu-description" name="description" rows="3" required class="form-textarea"></textarea>
+            </div>
+
+            <div class="project-form-modal__actions">
+                <button type="button"
+                        class="button button-secondary"
+                        popovertarget="edit-education-modal"
+                        popovertargetaction="hide">Batal</button>
+                <button type="submit" class="button" style="background-color: #007bff; color: white;">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
