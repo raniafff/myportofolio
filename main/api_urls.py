@@ -1,5 +1,7 @@
 from django.urls import path
+from rest_framework.authtoken import views as authtoken_views
 from main.api_views import (
+    api_logout,
     api_project_list,
     api_project_detail,
     api_project_toggle_star,
@@ -11,6 +13,10 @@ from main.api_views import (
 app_name = "api_v1"
 
 urlpatterns = [
+    # Auth Endpoints
+    path("auth/token/", authtoken_views.obtain_auth_token, name="api_token_auth"),
+    path("auth/logout/", api_logout, name="api_logout"),
+
     # Projects Endpoints
     path("projects/", api_project_list, name="api_project_list"),
     path("projects/<uuid:id>/", api_project_detail, name="api_project_detail"),

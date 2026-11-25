@@ -12,11 +12,22 @@ from main.serializers import ProjectSerializer, EducationSerializer
 
 
 # ==============================================================================
+# AUTH API VIEWS
+# ==============================================================================
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def api_logout(request):
+    if request.auth is not None:
+        request.auth.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# ==============================================================================
 # PROJECT API VIEWS
 # ==============================================================================
 
 @api_view(['GET', 'POST'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def api_project_list(request):
     """
@@ -45,7 +56,6 @@ def api_project_list(request):
 
 
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def api_project_detail(request, id):
     """
@@ -79,7 +89,6 @@ def api_project_detail(request, id):
 
 
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def api_project_toggle_star(request, id):
     """
@@ -106,7 +115,6 @@ def api_project_toggle_star(request, id):
 # ==============================================================================
 
 @api_view(['GET', 'POST'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def api_education_list(request):
     """
@@ -135,7 +143,6 @@ def api_education_list(request):
 
 
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def api_education_detail(request, id):
     """
@@ -169,7 +176,6 @@ def api_education_detail(request, id):
 
 
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def api_education_toggle_star(request, id):
     """
